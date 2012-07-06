@@ -5,10 +5,19 @@ function cae() {
     var width;
     var height;
     var cells = [];
+    var mask = [];
+    var rule = 129;
 
     var cell = function() {
         this.color = 0xffffff;
         this.state = 0;
+    }
+
+    var initMask = function() {
+        mask = [];
+        for (idx = 0; idx < 8; idx++) {
+            mask.push(Math.pow(2, idx));
+        }
     }
 
 
@@ -19,20 +28,52 @@ function cae() {
         height = m_canvas.height;
     }
 
+
+    var getCell = function(lastRow, i) {
+        var idx = 0;
+        if (i==0) {
+            if (lastRow.get(width - 1))
+                idx += 1;
+        } else {
+            if (lastRow.get((i - 1) % width)) {
+                idx += 1;
+            }
+        }
+        if (lastRow.get(i % width)) {
+            idx += 2;
+        }
+        if (i == (width - 1)) {
+            if (lastRow.get(0)) {
+                idx += 4;
+            }
+        } else {
+            if (lastRow.get((i + 1) % width)) {
+                idx += 4;
+            }
+        }
+        return (rule & mask[idx]) ? true : false;
+    }
+
     var drawRow = function() {
         for (idx = 0; idx < width; idx++) {
-            if (cells[idx].state) {
+            if (cells.get(idx).state) {
                 m_context.fillStyle = 'black';
             } else { 
                 m_context.fillStyle = 'white';
             }
             m_context.fillRect(idx, 0, 1, height);
         }
-        m_context.fillText("hi there", 10, 10);
+        var temp = [];
+        for (idx = 0; idx < width; idx++) {
+            temp.push(cells);
+        }
+        for (idx = 0; idx < width; idx++) {
+            cells.get(idx).state = temp.get(idx);
+        }
     }
 
     this.draw = function() {
-        drawRow();
+        for (count = 0; count < 100; count++)  drawRow();
     }
 
     this.init = function(id) {
@@ -41,6 +82,7 @@ function cae() {
             cells.push(new cell());
         }
         cells[Math.floor(width/2)].state = 1;
+        initMask();
     }
 
     this.getCanvas = function() {
