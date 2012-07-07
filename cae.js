@@ -7,6 +7,9 @@ function cae() {
     var cells = [];
     var mask = [];
     var rule = 129;
+    var pixelBufferOne; //= new Image();
+    var pixelBufferTwo; //= new Image();
+    var bufferFlag = 0;
 
     var cell = function() {
         this.color = 0xffffff;
@@ -61,7 +64,7 @@ function cae() {
             } else { 
                 m_context.fillStyle = 'white';
             }
-            m_context.fillRect(idx, 0, 1, height);
+            m_context.fillRect(idx, 0, 1, 1);
         }
         var temp = [];
         for (idx = 0; idx < width; idx++) {
@@ -72,12 +75,38 @@ function cae() {
         }
     }
 
+    var copyPixels = function() {
+        if (bufferFlag) {
+            m_context.putImageData(pixelBufferTwo, 0, 1, 0, 0, width, height - 1);
+        } else {
+            m_context.putImageData(pixelBufferOne, 0, 1, 0, 0, width, height - 1);
+        }
+    }
+
+    var flipBuffers = function() {
+        if (bufferFlag) {
+            pixelBufferTwo = m_context.getImageData(0, 0, width, height);
+            bufferFlag--;
+        } else {
+            pixelBufferOne = m_context.getImageData(0, 0, width, height);
+            bufferFlag++;
+        }
+    }
+
+    var iterate = function() {
+        copyPixels();
+        drawRow();
+        flipBuffers();
+    }
+
     this.draw = function() {
-        setInterval(function(){drawRow()},16);
+        setInterval(function(){iterate()},20);
     }
 
     this.init = function(id) {
         setCanvasId(id);
+        pixelBufferOne = m_context.createImageData(width, height);
+        pixelBufferTwo = m_context.createImageData(width, height);
         for (count = 0; count < width; count++) {
             cells.push(new cell());
         }
