@@ -14,7 +14,12 @@ function cae() {
     var line_count = 0;
     var lines_until_switch = 50;
     var minLines = 5;
-    var maxLines = 100;
+    var maxLines = 25;
+    var pixPerCell = 25;
+    var cellsWide;
+    var cellsHigh;
+    var framesPerSecond = 2;
+    var timeBetweenFrames = Math.floor(1000 / framesPerSecond);
 
     var populateRules = function() {
         rules = new Array(57,18,90,129,130,131,132,133);
@@ -38,28 +43,30 @@ function cae() {
         m_context = m_canvas.getContext('2d');
         width = m_canvas.width;
         height = m_canvas.height;
+        cellsWide = Math.floor(width / pixPerCell);
+        cellsHigh = Math.floor(height / pixPerCell);
     }
 
 
     var getCell = function(i) {
         var idx = 0;
         if (i==0) {
-            if (cells[width - 1].state)
+            if (cells[cellsWide - 1].state)
                 idx += 1;
         } else {
-            if (cells[(i - 1) % width].state) {
+            if (cells[(i - 1) % cellsWide].state) {
                 idx += 1;
             }
         }
-        if (cells[i % width].state) {
+        if (cells[i % cellsWide].state) {
             idx += 2;
         }
-        if (i == (width - 1)) {
+        if (i == (cellsWide - 1)) {
             if (cells[0].state) {
                 idx += 4;
             }
         } else {
-            if (cells[(i + 1) % width].state) {
+            if (cells[(i + 1) % cellsWide].state) {
                 idx += 4;
             }
         }
@@ -67,37 +74,37 @@ function cae() {
     }
 
     var drawRow = function() {
-        for (idx = 0; idx < width; idx++) {
+        for (idx = 0; idx < cellsWide; idx++) {
             if (cells[idx].state) {
                 m_context.fillStyle = 'black';
             } else { 
                 m_context.fillStyle = 'white';
             }
-            m_context.fillRect(idx, 0, 1, 1);
+            m_context.fillRect(idx * pixPerCell, 0, pixPerCell, pixPerCell);
         }
         var temp = [];
-        for (idx = 0; idx < width; idx++) {
+        for (idx = 0; idx < cellsWide; idx++) {
             temp.push(getCell(idx));
         }
-        for (idx = 0; idx < width; idx++) {
+        for (idx = 0; idx < cellsWide; idx++) {
             cells[idx].state = temp[idx];
         }
     }
 
     var copyPixels = function() {
-        if (bufferFlag) {
-            m_context.putImageData(pixelBufferTwo, 0, 1, 0, 0, width, height - 1);
+        if (!bufferFlag) {
+            m_context.putImageData(pixelBufferTwo, 0, pixPerCell, 0, 0, width, height - pixPerCell);
         } else {
-            m_context.putImageData(pixelBufferOne, 0, 1, 0, 0, width, height - 1);
+            m_context.putImageData(pixelBufferOne, 0, pixPerCell, 0, 0, width, height - pixPerCell);
         }
     }
 
     var flipBuffers = function() {
         if (bufferFlag) {
-            pixelBufferTwo = m_context.getImageData(0, 0, width, height-1);
+            pixelBufferTwo = m_context.getImageData(0, 0, width, height - pixPerCell);
             bufferFlag--;
         } else {
-            pixelBufferOne = m_context.getImageData(0, 0, width, height-1);
+            pixelBufferOne = m_context.getImageData(0, 0, width, height - pixPerCell);
             bufferFlag++;
         }
     }
@@ -117,11 +124,11 @@ function cae() {
 
     var reset = function() {
         cells = [];
-        for (count = 0; count < width; count++) {
+        for (count = 0; count < cellsWide; count++) {
             cells.push(new cellStruct());
         }
         //if (Math.round(Math.random()) == 1) {
-            cells[Math.floor(width/2)].state = true;
+            cells[Math.floor(cellsWide / 2)].state = true;
         /*} else {
             for (cell in cells) {
                 cell.state = (Math.round(Math.random()) == 1) ? true : false;
@@ -159,7 +166,7 @@ function cae() {
     }
 
     this.draw = function() {
-        setInterval(function(){iterate()},17);
+        setInterval(function(){iterate()}, timeBetweenFrames);
     }
 
     this.init = function(id) {
