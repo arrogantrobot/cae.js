@@ -103,13 +103,16 @@ function cae() {
     }
 
     var isDead = function() {
-        var checkState = cells[0].state;
-        for (cell in cells) {
-            if ((checkState && cell.state) || (!checkState && !cell.state)) {
-                return false;
+        var total = 0;
+        for (idx = 0; idx < cells.length; idx++) {
+            if (cells[idx].state) {
+                total += 1;
             }
         }
-        return true;
+        if ((total == width) || (total == 0)) {
+            return true;
+        }
+        return false;
     }
 
     var reset = function() {
@@ -139,22 +142,20 @@ function cae() {
         rule = rules[Math.floor(Math.random() * rules.length)];
     }
 
-    var reSeed = function() {
-        reset();
-        changeRule();
-    }
-
     var iterate = function() {
         line_count++;
         copyPixels();
         drawRow();
         flipBuffers();
-        if (switchRule()) {
-            changeRule();
-        }
         if (isDead()) {
-            reSeed();    
-        } 
+            reset();
+            changeRule();
+        } else {
+            if (switchRule()) {
+                console.log("changeRule");
+                changeRule();
+            }
+        }
     }
 
     this.draw = function() {
