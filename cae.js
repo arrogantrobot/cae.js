@@ -15,10 +15,10 @@ function cae() {
     var lines_until_switch = 50;
     var minLines = 5;
     var maxLines = 25;
-    var pixPerCell = 25;
+    var pixPerCell = 10;
     var cellsWide;
     var cellsHigh;
-    var framesPerSecond = 2;
+    var framesPerSecond = 8;
     var timeBetweenFrames = Math.floor(1000 / framesPerSecond);
 
     var populateRules = function() {
@@ -41,6 +41,15 @@ function cae() {
     var setCanvasId = function(id) {
         m_canvas = document.getElementById(id);
         m_context = m_canvas.getContext('2d');
+        width = m_canvas.width;
+        height = m_canvas.height;
+        cellsWide = Math.floor(width / pixPerCell);
+        cellsHigh = Math.floor(height / pixPerCell);
+    }
+
+    var setCSSCanvasId = function(id) {
+        m_canvas = document.getElementById(id);
+        m_context = m_canvas.getiCSSCanvasContext('2d');
         width = m_canvas.width;
         height = m_canvas.height;
         cellsWide = Math.floor(width / pixPerCell);
@@ -171,6 +180,15 @@ function cae() {
 
     this.init = function(id) {
         setCanvasId(id);
+        pixelBufferOne = m_context.createImageData(width, height - 1);
+        pixelBufferTwo = m_context.createImageData(width, height - 1);
+        populateRules();
+        reset();
+        initMask();
+    }
+
+    this.initCSS = function(id) {
+        setCanvasIdCSS(id);
         pixelBufferOne = m_context.createImageData(width, height - 1);
         pixelBufferTwo = m_context.createImageData(width, height - 1);
         populateRules();
