@@ -49,7 +49,7 @@ function cae() {
 
     var setCSSCanvasId = function(id) {
         m_canvas = document.getElementById(id);
-        m_context = m_canvas.getiCSSCanvasContext('2d');
+        m_context = m_canvas.getCSSCanvasContext('2d');
         width = m_canvas.width;
         height = m_canvas.height;
         cellsWide = Math.floor(width / pixPerCell);
