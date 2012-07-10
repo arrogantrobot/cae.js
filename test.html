@@ -1,14 +1,22 @@
 <html>
   <meta charset="utf-8">
+  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+      <html xmlns="http://www.w3.org/1999/xhtml"> 
   <head>
-    <title>Test cae.js</title>
+      <title>Test cae.js</title>
+      <style type="text/css">
+        #main_can {
+            float: right;
+        }
+        #floatLeft {
+            float: left;
+        }
+    </style>
   </head>
   <body onload="app();">
     <script src="cae.js"></script>
     <script src="app.js"></script>
-    <p>Here is a paragraph.</p>
-    <div class="ca">
-      <canvas id="main_can" width="750" height="200"/>
-    </div>
+    <p id="floatLeft">Here is a paragraph.</p>
+    <canvas id="main_can" width="750" height="30" />
   </body>
 </html>
