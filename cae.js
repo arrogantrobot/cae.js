@@ -183,6 +183,7 @@ function cae() {
         pixelBufferOne = m_context.createImageData(width, height - 1);
         pixelBufferTwo = m_context.createImageData(width, height - 1);
         populateRules();
+        changeRule();
         reset();
         initMask();
     }
