@@ -50,6 +50,7 @@ function cae() {
         this.state = false;
     }
 
+    //populate the mask array with powers of two
     var initMask = function() {
         mask = [];
         for (idx = 0; idx < 8; idx++) {
@@ -57,7 +58,7 @@ function cae() {
         }
     }
 
-
+    //set the element id of the canvas to draw upon, get its context, set width and height
     var setCanvasId = function(id) {
         m_canvas = document.getElementById(id);
         m_context = m_canvas.getContext('2d');
@@ -67,18 +68,11 @@ function cae() {
         cellsHigh = Math.floor(height / pixPerCell);
     }
 
-    var setCSSCanvasId = function(id) {
-        m_canvas = document.getElementById(id);
-        m_context = m_canvas.getCSSCanvasContext('2d');
-        width = m_canvas.width;
-        height = m_canvas.height;
-        cellsWide = Math.floor(width / pixPerCell);
-        cellsHigh = Math.floor(height / pixPerCell);
-    }
-
-
+    //based upon neighboring cells, determine the next state of a cell
+    //wrap cells on the ends so their neighbors are on the other end
     var getCell = function(i) {
         var idx = 0;
+
         if (i==0) {
             if (cells[cellsWide - 1].state)
                 idx += 1;
@@ -87,9 +81,11 @@ function cae() {
                 idx += 1;
             }
         }
+
         if (cells[i % cellsWide].state) {
             idx += 2;
         }
+
         if (i == (cellsWide - 1)) {
             if (cells[0].state) {
                 idx += 4;
@@ -99,9 +95,11 @@ function cae() {
                 idx += 4;
             }
         }
+
         return (rule & mask[idx]) ? true : false;
     }
 
+    //paint the new line of cells
     var drawRow = function() {
         for (idx = 0; idx < cellsWide; idx++) {
             if (cells[idx].state) {
@@ -120,6 +118,7 @@ function cae() {
         }
     }
 
+    //paint the contents of the appropriate pixel buffer onto the canvas
     var copyPixels = function() {
         if (!bufferFlag) {
             m_context.putImageData(pixelBufferTwo, 0, pixPerCell, 0, 0, width, height - pixPerCell);
@@ -128,6 +127,7 @@ function cae() {
         }
     }
 
+    //copy canvas onto the appropriate pixel buffer
     var flipBuffers = function() {
         if (bufferFlag) {
             pixelBufferTwo = m_context.getImageData(0, 0, width, height - pixPerCell);
@@ -138,6 +138,7 @@ function cae() {
         }
     }
 
+    //check the automata for life
     var isDead = function() {
         var total = 0;
         for (idx = 0; idx < cells.length; idx++) {
@@ -151,6 +152,7 @@ function cae() {
         return false;
     }
 
+    //create a new row of cells, setting the center cell to on
     var reset = function() {
         cells = [];
         for (count = 0; count < cellsWide; count++) {
@@ -159,6 +161,7 @@ function cae() {
         cells[Math.floor(cellsWide / 2)].state = true;
     }
 
+    //decide if it's time to change rules
     var switchRule = function() {
         if (line_count >= lines_until_switch) {
             line_count = 0;
@@ -168,10 +171,12 @@ function cae() {
         return false;
     }
 
+    //pick a random rule
     var changeRule = function() {
         rule = rules[Math.floor(Math.random() * rules.length)];
     }
 
+    //run this for each frame
     var iterate = function() {
         line_count++;
         copyPixels();
@@ -188,16 +193,19 @@ function cae() {
         }
     }
 
+    //setter for pixels per cell
     this.setPixelsPerCell = function(pix) {
         if ((pix > 0) && (pix < Math.min(width,height))) {
             pixPerCell = pix;
         }
     }
 
+    //start the music
     this.draw = function() {
         setInterval(function(){iterate()}, timeBetweenFrames);
     }
 
+    //pass it the id of the canvas you wish it to draw upon
     this.init = function(id) {
         setCanvasId(id);
         pixelBufferOne = m_context.createImageData(width, height - 1);
