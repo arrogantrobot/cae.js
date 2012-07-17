@@ -1,0 +1,8 @@
+Cellular Automata Explorer: Javascript
+======================================
+  
+Create a cae object, give it the element id of a canvas, and pull the rip cord.
+
+    m_cae = new cae();
+    m_cae.init("m_cae_canvas");
+    m_cae.draw();
