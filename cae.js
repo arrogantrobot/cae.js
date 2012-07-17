@@ -44,7 +44,7 @@ function cae() {
         rules = new Array(57,18,90,129,130,131,132,133);
     }
 
-    var calcTBF() {
+    var calcTBF = function() {
         timeBetweenFrames = Math.floor(1000 / framesPerSecond);
     }
 
