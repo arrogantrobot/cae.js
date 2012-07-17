@@ -199,7 +199,7 @@ function cae() {
 
     //setter for pixels per cell
     this.setPixelsPerCell = function(pix) {
-        if ((pix > 0) && (pix < Math.min(width,height))) {
+        if ((pix > 0) && (pix <= Math.min(width,height))) {
             pixPerCell = pix;
         }
     }
