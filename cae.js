@@ -37,11 +37,15 @@ function cae() {
     
     //frames per second and milliseconds per frame
     var framesPerSecond = 8;     
-    var timeBetweenFrames = Math.floor(1000 / framesPerSecond);
+    var timeBetweenFrames;
 
     //default list of rules
     var populateRules = function() {
         rules = new Array(57,18,90,129,130,131,132,133);
+    }
+
+    var calcTBF() {
+        timeBetweenFrames = Math.floor(1000 / framesPerSecond);
     }
 
     //cell data structure
@@ -200,6 +204,12 @@ function cae() {
         }
     }
 
+    //setter for frames per second
+    this.setFramesPerSecond = function(fps) {
+        framesPerSecond = fps;
+        calcTBF();
+    }
+
     //start the music
     this.draw = function() {
         setInterval(function(){iterate()}, timeBetweenFrames);
@@ -208,6 +218,7 @@ function cae() {
     //pass it the id of the canvas you wish it to draw upon
     this.init = function(id) {
         setCanvasId(id);
+        calcTBF();
         pixelBufferOne = m_context.createImageData(width, height - 1);
         pixelBufferTwo = m_context.createImageData(width, height - 1);
         populateRules();
