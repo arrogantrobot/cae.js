@@ -191,7 +191,6 @@ function cae() {
             changeRule();
         } else {
             if (switchRule()) {
-                console.log("changeRule");
                 changeRule();
             }
         }
